@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vibelit/config/styles.dart';
 import 'package:vibelit/screen/parameter_screen.dart';
+import 'package:vibelit/screen/parameter_setting.dart';
 import 'package:vibelit/widget/button/feature_button.dart';
 import 'package:vibelit/widget/button/icon_circle_button.dart';
 import 'package:vibelit/widget/switch/switch.dart';
@@ -37,7 +38,9 @@ class _OnOffScreenState extends State<OnOffScreen> {
                     size: 24,
                     color: Colors.white,
                   ),
-                  onClick: () {},
+                  onClick: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => ParameterSettingScreen(),));
+                  },
                   size: 24,
                 ),
                 IconCircleButton(
