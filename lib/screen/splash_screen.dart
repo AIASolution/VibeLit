@@ -12,7 +12,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: Styles.primaryGrey,
       body: Center(
-        child: Text("VibeLit", style: TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold),),
+        child: Text("VibeLit", style: TextStyle(color: Colors.white, fontSize: 48, fontWeight: FontWeight.bold),),
       ),
     );
   }
