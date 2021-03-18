@@ -13,9 +13,6 @@ class ProgressBar extends StatefulWidget {
 class _ProgressBarState extends State<ProgressBar> {
   @override
   Widget build(BuildContext context) {
-    print("Percent: ${widget.percent}");
-    print("width: ${widget.width}");
-    print("progress: ${widget.width * widget.percent / 100}");
     return Stack(
       children: [
         Container(width: widget.width, height: widget.height, decoration: BoxDecoration(color: widget.backgroundColor, borderRadius: BorderRadius.circular(widget.height / 2))),
