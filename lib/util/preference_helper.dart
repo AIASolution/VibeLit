@@ -45,13 +45,14 @@ class PreferenceHelper {
   }
 
   static Future<bool> setDate(String key, DateTime value) {
+    if (value == null) return Application.preferences.remove(key);
     int timestamp = value.millisecondsSinceEpoch;
     return Application.preferences.setInt(key, timestamp);
   }
 
   static DateTime getDate(String key) {
     int timestamp = Application.preferences.getInt(key);
-    return timestamp != null ? DateTime.fromMillisecondsSinceEpoch(timestamp) : DateTime.now();
+    return timestamp != null ? DateTime.fromMillisecondsSinceEpoch(timestamp) : null;
   }
 
   static Future<bool> setString(String key, String value) {

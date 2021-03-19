@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:vibelit/config/styles.dart';
+import 'package:vibelit/screen/air_purification_screen.dart';
 import 'package:vibelit/widget/button/icon_circle_button.dart';
 
 class StopAirPurificationScreen extends StatefulWidget {
@@ -29,7 +30,7 @@ class _StopAirPurificationScreenState extends State<StopAirPurificationScreen> {
                     color: Colors.black,
                   ),
                   onClick: () {
-                    Navigator.pop(context);
+                    Navigator.of(context).popUntil((route) => route.isFirst);
                   },
                   size: 24,
                 ),
@@ -77,7 +78,9 @@ class _StopAirPurificationScreenState extends State<StopAirPurificationScreen> {
               backgroundColor: Colors.white.withOpacity(0.1),
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32))),
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
           SizedBox(
             height: 30,
