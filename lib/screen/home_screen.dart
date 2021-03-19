@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vibelit/bloc/bloc.dart';
 import 'package:vibelit/config/styles.dart';
 import 'package:vibelit/screen/air_purification_screen.dart';
+import 'package:vibelit/screen/menu_screen.dart';
 import 'package:vibelit/screen/on_off_screen.dart';
 import 'package:vibelit/screen/parameter_screen.dart';
 import 'package:vibelit/widget/button/icon_circle_button.dart';
@@ -76,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => OnOffScreen(),
+                                    builder: (context) => MenuScreen(),
                                   ));
                             },
                             size: 24,
