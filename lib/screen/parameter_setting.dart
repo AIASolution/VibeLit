@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:vibelit/config/application.dart';
+import 'package:vibelit/config/constants.dart';
 import 'package:vibelit/config/params.dart';
 import 'package:vibelit/config/styles.dart';
 import 'package:vibelit/screen/help_screen.dart';
@@ -95,13 +96,13 @@ class _ParameterSettingScreenState extends State<ParameterSettingScreen> {
                 ),
                 child: NumberPicker.integer(
                   initialValue: intensity,
-                  minValue: Application.INTENSITY_MIN,
-                  maxValue: Application.INTENSITY_MAX,
+                  minValue: Constants.INTENSITY_MIN,
+                  maxValue: Constants.INTENSITY_MAX,
                   listViewWidth: 260,
                   listViewHeight: 60,
                   horizontal: true,
                   onChanged: (value) {
-                    if (value >= Application.INTENSITY_MIN && value <= Application.INTENSITY_MAX) {
+                    if (value >= Constants.INTENSITY_MIN && value <= Constants.INTENSITY_MAX) {
                       setState(() {
                         intensity = value;
                       });
