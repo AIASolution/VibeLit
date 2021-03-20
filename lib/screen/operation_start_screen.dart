@@ -1,25 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vibelit/bloc/bloc.dart';
+import 'package:vibelit/config/constants.dart';
 import 'package:vibelit/config/params.dart';
 import 'package:vibelit/config/styles.dart';
-import 'package:vibelit/screen/stop_air_purification_screen.dart';
+import 'package:vibelit/screen/operation_stop_screen.dart';
 import 'package:vibelit/util/preference_helper.dart';
 import 'package:vibelit/widget/button/icon_circle_button.dart';
 
-class AirPurificationScreen extends StatefulWidget {
+class OperationStartScreen extends StatefulWidget {
+
+  final String mode;
+
+  OperationStartScreen({this.mode});
+
   @override
-  _AirPurificationScreenState createState() => _AirPurificationScreenState();
+  _OperationStartScreenState createState() => _OperationStartScreenState();
 }
 
-class _AirPurificationScreenState extends State<AirPurificationScreen> {
-
-  PurificationBloc _purificationBloc;
+class _OperationStartScreenState extends State<OperationStartScreen> {
+  OperationBloc _operationBloc;
 
   @override
   void initState() {
     super.initState();
-    _purificationBloc = BlocProvider.of<PurificationBloc>(context);
+    _operationBloc = BlocProvider.of<OperationBloc>(context);
   }
 
   @override
@@ -65,7 +70,7 @@ class _AirPurificationScreenState extends State<AirPurificationScreen> {
           ),
           SizedBox(height: 10,),
           Text(
-            "AIR PURIFICATION",
+            widget.mode.toUpperCase(),
             style: TextStyle(color: Styles.bgGreen, fontSize: 24, fontFamily: 'Montserrat'),
           ),
           SizedBox(height: 40,),
@@ -73,8 +78,8 @@ class _AirPurificationScreenState extends State<AirPurificationScreen> {
             width: 200,
             height: 80,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(32)
+                color: Colors.white.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(32)
             ),
             child: Row(
               children: [
@@ -138,8 +143,8 @@ class _AirPurificationScreenState extends State<AirPurificationScreen> {
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32))),
             ),
             onPressed: () {
-              _purificationBloc.add(PurificationStartEvent());
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StopAirPurificationScreen(),));
+              _operationBloc.add(OperationStartEvent(mode: Constants.Air_Purification));
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => OperationStopScreen(),));
             },
           ),
           SizedBox(

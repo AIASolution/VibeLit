@@ -1,28 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vibelit/bloc/bloc.dart';
+import 'package:vibelit/config/constants.dart';
+import 'package:vibelit/config/params.dart';
 import 'package:vibelit/config/styles.dart';
+import 'package:vibelit/util/preference_helper.dart';
 import 'package:vibelit/util/time_utils.dart';
 import 'package:vibelit/widget/button/icon_circle_button.dart';
 
-class StopAirPurificationScreen extends StatefulWidget {
+class OperationStopScreen extends StatefulWidget {
   @override
-  _StopAirPurificationScreenState createState() => _StopAirPurificationScreenState();
+  _OperationStopScreenState createState() => _OperationStopScreenState();
 }
 
-class _StopAirPurificationScreenState extends State<StopAirPurificationScreen> {
-
-  PurificationBloc _purificationBloc;
+class _OperationStopScreenState extends State<OperationStopScreen> {
+  OperationBloc _operationBloc;
 
   @override
   void initState() {
     super.initState();
-    _purificationBloc = BlocProvider.of<PurificationBloc>(context);
+    _operationBloc = BlocProvider.of<OperationBloc>(context);
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_operationBloc.state is OperationStoppedState) {
+      Navigator.pop(context);
+      return Container();
+    }
     return Scaffold(
       backgroundColor: Styles.bgYellow,
       body: Column(
@@ -60,37 +65,35 @@ class _StopAirPurificationScreenState extends State<StopAirPurificationScreen> {
             style: TextStyle(color: Colors.black, fontSize: 20, fontFamily: 'Montserrat'),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 120,),
-          Text(
-            "Time remaining",
-            style: TextStyle(color: Colors.black, fontSize: 18, fontFamily: 'Montserrat'),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 10,),
-          BlocBuilder<PurificationBloc, PurificationState>(
-              builder: (context, state) {
-                if (state is PurificationInProgressState) {
-                  return TextButton(
-                    child: Text(
-                      "${TimeUtils.calculateRemainedTimeInMinutes()} min",
-                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20, fontFamily: 'Montserrat'),
-                    ),
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                      backgroundColor: Colors.white.withOpacity(0.1),
-                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32))),
-                    ),
-                  );
-                } else if (state is PurificationLoadingState) {
-                  return Container();
-                } else {
-                  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                    Navigator.pop(context);
-                  });
-                  return Container();
-                }
-              },
-          ),
+          PreferenceHelper.getString(Params.operationMode) != Constants.Air_Purification ? Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: 120,),
+              Text(
+                "Time remaining",
+                style: TextStyle(color: Colors.black, fontSize: 18, fontFamily: 'Montserrat'),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 10,),
+              BlocBuilder<OperationBloc, OperationState>(
+                builder: (context, state) {
+                  if (state is OperationInProgressState) {
+                    return TextButton(
+                      child: Text(
+                        "${TimeUtils.calculateRemainedTimeInMinutes()} min",
+                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20, fontFamily: 'Montserrat'),
+                      ),
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                        backgroundColor: Colors.white.withOpacity(0.1),
+                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32))),
+                      ),
+                    );
+                  } else return Container();
+                },
+              )
+            ],
+          ) : Container(),
           Expanded(child: Container()),
           TextButton(
             child: Text(
@@ -103,7 +106,7 @@ class _StopAirPurificationScreenState extends State<StopAirPurificationScreen> {
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32))),
             ),
             onPressed: () {
-              _purificationBloc.add(PurificationStopEvent());
+              _operationBloc.add(OperationStopEvent());
               Navigator.pop(context);
             },
           ),
