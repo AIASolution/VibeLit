@@ -4,6 +4,7 @@ import 'package:vibelit/bloc/bloc.dart';
 import 'package:vibelit/config/constants.dart';
 import 'package:vibelit/config/params.dart';
 import 'package:vibelit/config/styles.dart';
+import 'package:vibelit/screen/on_off_screen.dart';
 import 'package:vibelit/util/preference_helper.dart';
 import 'package:vibelit/util/time_utils.dart';
 import 'package:vibelit/widget/button/icon_circle_button.dart';
@@ -24,97 +25,101 @@ class _OperationStopScreenState extends State<OperationStopScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_operationBloc.state is OperationStoppedState) {
-      Navigator.pop(context);
-      return Container();
-    }
-    return Scaffold(
-      backgroundColor: Styles.bgYellow,
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20, top: 60),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(child: Container()),
-                IconCircleButton(
-                  icon: Icon(
-                    Icons.clear,
-                    size: 24,
-                    color: Colors.black,
-                  ),
-                  onClick: () {
-                    Navigator.of(context).popUntil((route) => route.isFirst);
-                  },
-                  size: 24,
-                ),
-              ],
-            ),
-          ),
-          Expanded(child: Container()),
-          Text(
-            "PROGRAM\nUNDER WAY",
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 28, fontFamily: 'Montserrat'),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 40,),
-          Text(
-            "please don\'t enter\nthe room",
-            style: TextStyle(color: Colors.black, fontSize: 20, fontFamily: 'Montserrat'),
-            textAlign: TextAlign.center,
-          ),
-          PreferenceHelper.getString(Params.operationMode) != Constants.Air_Purification ? Column(
-            mainAxisSize: MainAxisSize.min,
+    return BlocConsumer<OperationBloc, OperationState>(
+      buildWhen: (previous, current) {
+        return current is! OperationStoppedState;
+      },
+        builder: (context, state) => Scaffold(
+          backgroundColor: Styles.bgYellow,
+          body: Column(
             children: [
-              SizedBox(height: 120,),
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 60),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(child: Container()),
+                    IconCircleButton(
+                      icon: Icon(
+                        Icons.clear,
+                        size: 24,
+                        color: Colors.black,
+                      ),
+                      onClick: () {
+                        Navigator.of(context).popUntil((route) => route.isFirst);
+                      },
+                      size: 24,
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(child: Container()),
               Text(
-                "Time remaining",
-                style: TextStyle(color: Colors.black, fontSize: 18, fontFamily: 'Montserrat'),
+                "PROGRAM\nUNDER WAY",
+                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 28, fontFamily: 'Montserrat'),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 10,),
-              BlocBuilder<OperationBloc, OperationState>(
-                builder: (context, state) {
-                  if (state is OperationInProgressState) {
-                    return TextButton(
-                      child: Text(
-                        "${TimeUtils.calculateRemainedTimeInMinutes()} min",
-                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20, fontFamily: 'Montserrat'),
-                      ),
-                      style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                        backgroundColor: Colors.white.withOpacity(0.1),
-                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32))),
-                      ),
-                    );
-                  } else return Container();
+              SizedBox(height: 40,),
+              Text(
+                "please don\'t enter\nthe room",
+                style: TextStyle(color: Colors.black, fontSize: 20, fontFamily: 'Montserrat'),
+                textAlign: TextAlign.center,
+              ),
+              PreferenceHelper.getString(Params.operationMode) != Constants.Air_Purification ? Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(height: 120,),
+                  Text(
+                    "Time remaining",
+                    style: TextStyle(color: Colors.black, fontSize: 18, fontFamily: 'Montserrat'),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 10,),
+                  BlocBuilder<OperationBloc, OperationState>(
+                    builder: (context, state) {
+                      if (state is OperationInProgressState) {
+                        return TextButton(
+                          child: Text(
+                            "${TimeUtils.calculateRemainedTimeInMinutes()} min",
+                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20, fontFamily: 'Montserrat'),
+                          ),
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                            backgroundColor: Colors.white.withOpacity(0.1),
+                            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32))),
+                          ),
+                        );
+                      } else return Container();
+                    },
+                  )
+                ],
+              ) : Container(),
+              Expanded(child: Container()),
+              TextButton(
+                child: Text(
+                  "Stop",
+                  style: TextStyle(color: Colors.red, fontSize: 20, fontFamily: 'Montserrat'),
+                ),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                  backgroundColor: Colors.white.withOpacity(0.1),
+                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32))),
+                ),
+                onPressed: () {
+                  _operationBloc.add(OperationStopEvent());
+                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => OnOffScreen(),));
                 },
+              ),
+              SizedBox(
+                height: 30,
               )
             ],
-          ) : Container(),
-          Expanded(child: Container()),
-          TextButton(
-            child: Text(
-              "Stop",
-              style: TextStyle(color: Colors.red, fontSize: 20, fontFamily: 'Montserrat'),
-            ),
-            style: TextButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-              backgroundColor: Colors.white.withOpacity(0.1),
-              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32))),
-            ),
-            onPressed: () {
-              _operationBloc.add(OperationStopEvent());
-              Navigator.pop(context);
-            },
           ),
-          SizedBox(
-            height: 30,
-          )
-        ],
-      ),
-    );
+        ),
+        listener: (context, state) {
+          if (state is OperationStoppedState) Navigator.pop(context);
+        },);
   }
 }

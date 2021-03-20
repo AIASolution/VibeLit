@@ -143,7 +143,7 @@ class _OperationStartScreenState extends State<OperationStartScreen> {
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32))),
             ),
             onPressed: () {
-              _operationBloc.add(OperationStartEvent(mode: Constants.Air_Purification));
+              _operationBloc.add(OperationStartEvent(mode: widget.mode));
               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => OperationStopScreen(),));
             },
           ),

@@ -8,12 +8,14 @@ class AppBloc {
   static final weatherBloc = WeatherBloc();
   static final statusBloc = StatusBloc();
   static final operationBloc = OperationBloc();
+  static final dataBloc = DataBloc();
 
   static final List<BlocProvider> blocProviders = [
     BlocProvider<ApplicationBloc>(create: (context) => applicationBloc),
     BlocProvider<WeatherBloc>(create: (context) => weatherBloc),
     BlocProvider<StatusBloc>(create: (context) => statusBloc),
     BlocProvider<OperationBloc>(create: (context) => operationBloc),
+    BlocProvider<DataBloc>(create: (context) => dataBloc),
   ];
 
   static void dispose() {
@@ -21,6 +23,7 @@ class AppBloc {
     weatherBloc.close();
     statusBloc.close();
     operationBloc.close();
+    dataBloc.close();
   }
 
   ///Singleton factory

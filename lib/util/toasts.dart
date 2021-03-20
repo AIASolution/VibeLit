@@ -31,12 +31,12 @@ class ToastUtils {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(type == ToastType.SUCCESS ? Icons.check : type == ToastType.ERROR ? Icons.error_outline : Icons.info, color: type == ToastType.ERROR ? Colors.red : Styles.txtColor, size: 48,),
+          Icon(type == ToastType.SUCCESS ? Icons.check : type == ToastType.ERROR ? Icons.error_outline : Icons.info, color: type == ToastType.ERROR ? Colors.red : Styles.txtColor, size: 32,),
           SizedBox(
             width: 12.0,
           ),
           Flexible(
-            child: Text(msg, style: TextStyle(color: type == ToastType.ERROR ? Colors.red : Styles.txtColor, fontSize: 24)),
+            child: Text(msg, style: TextStyle(color: type == ToastType.ERROR ? Colors.red : Styles.txtColor, fontSize: 16)),
           ),
         ],
       ),

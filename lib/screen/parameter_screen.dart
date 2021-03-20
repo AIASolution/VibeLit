@@ -42,35 +42,7 @@ class _ParameterScreenState extends State<ParameterScreen> {
           Expanded(child: Container()),
           buildWeather(),
           Expanded(child: Container()),
-          Text(
-            "Air quality parameters",
-            style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Montserrat'),
-          ),
-          SizedBox(height: 10,),
-          Text(
-            "Indoor",
-            style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 16, fontFamily: 'Montserrat'),
-          ),
-          SizedBox(height: 30,),
-          GraphWidget(
-            title: "Umidità",
-            percent: 90,
-          ),
-          SizedBox(height: 10,),
-          GraphWidget(
-            title: "Polveri",
-            percent: 60,
-          ),
-          SizedBox(height: 10,),
-          GraphWidget(
-            title: "VOC",
-            percent: 35,
-          ),
-          SizedBox(height: 10,),
-          GraphWidget(
-            title: "Co2",
-            percent: 65,
-          ),
+          buildData(),
           Expanded(child: Container()),
         ],
       ),
@@ -155,6 +127,51 @@ class _ParameterScreenState extends State<ParameterScreen> {
           ],
         );
       },
+    );
+  }
+
+  Widget buildData() {
+    return BlocBuilder<DataBloc, DataState>(
+        builder: (context, state) {
+          if (state is DataLoadingState) {
+            return CircularProgressIndicator();
+          } else {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Air quality parameters",
+                  style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Montserrat'),
+                ),
+                SizedBox(height: 10,),
+                Text(
+                  "Indoor",
+                  style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 16, fontFamily: 'Montserrat'),
+                ),
+                SizedBox(height: 30,),
+                GraphWidget(
+                  title: "Umidità",
+                  percent: 90,
+                ),
+                SizedBox(height: 10,),
+                GraphWidget(
+                  title: "Polveri",
+                  percent: 60,
+                ),
+                SizedBox(height: 10,),
+                GraphWidget(
+                  title: "VOC",
+                  percent: 35,
+                ),
+                SizedBox(height: 10,),
+                GraphWidget(
+                  title: "Co2",
+                  percent: 65,
+                )
+              ],
+            );
+          }
+        },
     );
   }
 }

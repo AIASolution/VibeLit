@@ -1,4 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vibelit/bloc/app_bloc.dart';
+import 'package:vibelit/bloc/bloc.dart';
 import 'package:vibelit/config/constants.dart';
 import 'package:vibelit/config/params.dart';
 import 'package:vibelit/util/preference_helper.dart';
@@ -43,6 +45,7 @@ class OperationBloc extends Bloc<OperationEvent, OperationState> {
     await PreferenceHelper.setString(Params.operationMode, mode);
     await PreferenceHelper.setDate(Params.operationStartedAt, startedAt);
     yield OperationInProgressState(mode: mode, startedAt: startedAt);
+    AppBloc.dataBloc.add(DataLoadEvent());
   }
 
   Stream<OperationState> _mapOperationStopEventToState() async* {

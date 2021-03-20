@@ -4,5 +4,5 @@ class Params {
   static final String volume = "volume";
   static final String operationMode = "operationMode";
   static final String operationStartedAt = "operationStartedAt";
-  static final String purificationStartedTime = "purificationStartedTime";
+  static final String sensorData = "sensorData";
 }
