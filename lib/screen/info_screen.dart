@@ -62,7 +62,7 @@ class _InfoScreenState extends State<InfoScreen> {
             ),
             SizedBox(height: 4,),
             Text(
-              "and curiositys",
+              "and Curiositys",
               style: TextStyle(color: Styles.txtColor, fontSize: 28, fontFamily: 'Montserrat'),
             ),
             SizedBox(height: 30,),

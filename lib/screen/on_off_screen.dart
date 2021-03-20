@@ -93,11 +93,11 @@ class _OnOffScreenState extends State<OnOffScreen> {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text("on", style: TextStyle(fontSize: 10, color: Colors.white.withOpacity(onOffValue ? 1 : 0.3)),),
+              Text("off", style: TextStyle(fontSize: 10, color: Colors.white.withOpacity(!onOffValue ? 1 : 0.3)),),
               SizedBox(width: 4,),
               Text("/", style: TextStyle(fontSize: 10, color: Colors.white),),
               SizedBox(width: 4,),
-              Text("off", style: TextStyle(fontSize: 10, color: Colors.white.withOpacity(!onOffValue ? 1 : 0.3)),),
+              Text("on", style: TextStyle(fontSize: 10, color: Colors.white.withOpacity(onOffValue ? 1 : 0.3)),),
             ],
           ),
           SizedBox(
@@ -117,7 +117,7 @@ class _OnOffScreenState extends State<OnOffScreen> {
                 width: 30,
               ),
               FeatureButton(
-                caption: "Light",
+                caption: "Music",
                 asset: "assets/images/ic_music.png",
                 onClick: () {},
               ),
