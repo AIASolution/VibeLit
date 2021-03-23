@@ -8,6 +8,7 @@ class HelpScreen extends StatefulWidget {
 }
 
 class _HelpScreenState extends State<HelpScreen> {
+  double space = 20;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,6 +35,32 @@ class _HelpScreenState extends State<HelpScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "Intensity",
+                      style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Montserrat'),
+                    ),
+                    SizedBox(width: 6,),
+                    Text(
+                      "Info",
+                      style: TextStyle(color: Colors.white, fontSize: 20, fontFamily: 'Montserrat'),
+                    ),
+                  ],
+                ),
+                SizedBox(height: space,),
+                Container(width: 100, height: 1, color: Colors.white,),
+                SizedBox(height: space,),
+                Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 60),
+                    child: Text(
+                      "Set the intensity from 1 to 5 to increase the ions production during Air Purification mode or make a longer Odour Removal program.\nIncreasing the intensity values also increases the air flow rate of the product",
+                      style: TextStyle(color: Colors.white, fontSize: 16, fontFamily: 'Montserrat'),
+                      textAlign: TextAlign.center,
+                    )
+                ),
+                SizedBox(height: 80,),
                 Text(
                   "How to calculate",
                   style: TextStyle(color: Colors.white, fontSize: 20, fontFamily: 'Montserrat'),
@@ -53,33 +80,24 @@ class _HelpScreenState extends State<HelpScreen> {
                     ),
                   ],
                 ),
-                SizedBox(height: 30,),
+                SizedBox(height: space,),
                 Container(width: 100, height: 1, color: Colors.white,),
-                SizedBox(height: 30,),
+                SizedBox(height: space,),
                 Text(
                   "the volume of a space \n is calculated by \n multiplying three factor.",
                   style: TextStyle(color: Colors.white, fontSize: 16, fontFamily: 'Montserrat'),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 30,),
+                SizedBox(height: space,),
                 Text(
                   "L x P x H",
                   style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold, fontFamily: 'Montserrat'),
                 ),
-                SizedBox(height: 50,),
+                SizedBox(height: space,),
                 Text(
                   "values must be over 100 and \n below 5000",
                   style: TextStyle(color: Colors.white, fontSize: 12, fontFamily: 'Montserrat'),
                   textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 30,),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 60),
-                  child: Text(
-                    "Set the intensity from 1 to 5 to increase the ions production during Air Purification mode or make a longer Odour Removal program.\nIncreasing the intensity values also increases the air flow rate of the product",
-                    style: TextStyle(color: Colors.white, fontSize: 14, fontFamily: 'Montserrat'),
-                    textAlign: TextAlign.center,
-                  )
                 ),
               ],
             ),
