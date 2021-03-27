@@ -53,9 +53,9 @@ class _VibeLitAppState extends State<VibeLitApp> {
               if (state is ApplicationSetupState) {
                 return BlocBuilder<BluetoothBloc, BluetoothAppState>(
                     builder: (bleContext, bleState) {
-                      if (bleState is BluetoothPairState) {
+                      /*if (bleState is BluetoothPairState) {
                         return BluetoothPairScreen();
-                      }
+                      }*/
                       return HomeScreen();
                     });
               }

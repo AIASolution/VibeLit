@@ -15,6 +15,12 @@ class Utils {
     return values[0] != Constants.OFF_MODE;
   }
 
+  static String getDeviceOperationMode() {
+    List<String> values = getDeviceStatus();
+    if (values.isEmpty) return Constants.OFF_MODE;
+    return values[0];
+  }
+
   static int getDeviceIntensity() {
     List<String> values = getDeviceStatus();
     if (values.isEmpty) return Constants.INTENSITY_MIN;

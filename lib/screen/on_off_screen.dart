@@ -5,10 +5,12 @@ import 'package:vibelit/config/constants.dart';
 import 'package:vibelit/config/params.dart';
 import 'package:vibelit/config/styles.dart';
 import 'package:vibelit/screen/operation_start_screen.dart';
+import 'package:vibelit/screen/operation_stop_screen.dart';
 import 'package:vibelit/screen/parameter_screen.dart';
 import 'package:vibelit/screen/parameter_setting.dart';
 import 'package:vibelit/util/preference_helper.dart';
 import 'package:vibelit/util/toasts.dart';
+import 'package:vibelit/util/utils.dart';
 import 'package:vibelit/widget/button/feature_button.dart';
 import 'package:vibelit/widget/button/icon_circle_button.dart';
 import 'package:vibelit/widget/switch/switch.dart';
@@ -158,66 +160,43 @@ class _OnOffScreenState extends State<OnOffScreen> {
           SizedBox(
             height: 20,
           ),
-          BlocBuilder<OperationBloc, OperationState>(
-            builder: (context, state) {
-              bool inProgress = state is OperationInProgressState;
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  FeatureButton(
-                    caption: "Air",
-                    asset: "assets/images/ic_air.png",
-                    onClick: () {
-                      if (inProgress) {
-                        ToastUtils.showErrorToast(context, "${PreferenceHelper.getString(Params.operationMode)} is in use");
-                      } else {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => OperationStartScreen(mode: Constants.Air_Purification,),
-                            ));
-                      }
-                    },
-                  ),
-                  SizedBox(
-                    width: 30,
-                  ),
-                  FeatureButton(
-                    caption: "Odour",
-                    asset: "assets/images/ic_smell.png",
-                    onClick: () {
-                      if (inProgress) {
-                        ToastUtils.showErrorToast(context, "${PreferenceHelper.getString(Params.operationMode)} is in use");
-                      } else {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => OperationStartScreen(mode: Constants.Odour_Removal,),
-                            ));
-                      }
-                    },
-                  ),
-                  SizedBox(
-                    width: 30,
-                  ),
-                  FeatureButton(
-                    caption: "Surfaces",
-                    asset: "assets/images/ic_surfaces.png",
-                    onClick: () {
-                      if (inProgress) {
-                        ToastUtils.showErrorToast(context, "${PreferenceHelper.getString(Params.operationMode)} is in use");
-                      } else {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => OperationStartScreen(mode: Constants.Surface_Disinfection,),
-                            ));
-                      }
-                    },
-                  ),
-                ],
-              );
-            },
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FeatureButton(
+                caption: "Air",
+                asset: "assets/images/ic_air.png",
+                onClick: () {
+                  print("Mode: ${Utils.getDeviceOperationMode()}");
+                  print("Status: ${Utils.isDeviceOn()}");
+                  handleOperationClicked(Constants.AIR_PURIFICATION_MODE);
+                },
+              ),
+              SizedBox(
+                width: 30,
+              ),
+              FeatureButton(
+                caption: "Odour",
+                asset: "assets/images/ic_smell.png",
+                onClick: () {
+                  print("Mode: ${Utils.getDeviceOperationMode()}");
+                  print("Status: ${Utils.isDeviceOn()}");
+                  handleOperationClicked(Constants.ODOUR_REMOVAL_MODE);
+                },
+              ),
+              SizedBox(
+                width: 30,
+              ),
+              FeatureButton(
+                caption: "Surfaces",
+                asset: "assets/images/ic_surfaces.png",
+                onClick: () {
+                  print("Mode: ${Utils.getDeviceOperationMode()}");
+                  print("Status: ${Utils.isDeviceOn()}");
+                  handleOperationClicked(Constants.SURFACE_SANITIZE_MODE);
+                },
+              ),
+            ],
           ),
           SizedBox(
             height: 50,
@@ -225,5 +204,25 @@ class _OnOffScreenState extends State<OnOffScreen> {
         ],
       ),
     );
+  }
+
+  void handleOperationClicked(String mode) {
+    if (Utils.isDeviceOn()) {
+      if (Utils.getDeviceOperationMode() != mode) {
+        ToastUtils.showErrorToast(context, "Device is in use");
+      } else {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => OperationStopScreen(),
+            ));
+      }
+    } else {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OperationStartScreen(mode: mode),
+          ));
+    }
   }
 }

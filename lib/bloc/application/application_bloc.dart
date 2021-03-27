@@ -35,6 +35,7 @@ class ApplicationBloc extends Bloc<ApplicationEvent, ApplicationState> {
     AppBloc.statusBloc.add(StatusCheckEvent());
     AppBloc.operationBloc.add(OperationStatusEvent());
     AppBloc.bluetoothBloc.add(BluetoothCheckEvent());
+    AppBloc.deviceBloc.add(DeviceCheckEvent());
 
     /// Application Setup Completed
     yield ApplicationSetupState();

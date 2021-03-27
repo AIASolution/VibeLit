@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
@@ -7,9 +8,11 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:vibelit/bloc/bloc.dart';
+import 'package:vibelit/config/application.dart';
 import 'package:vibelit/config/constants.dart';
 import 'package:vibelit/config/params.dart';
 import 'package:vibelit/config/styles.dart';
+import 'package:vibelit/screen/bluetooth_pair_screen.dart';
 import 'package:vibelit/screen/menu_screen.dart';
 import 'package:vibelit/screen/on_off_screen.dart';
 import 'package:vibelit/screen/operation_stop_screen.dart';
@@ -17,6 +20,7 @@ import 'package:vibelit/screen/parameter_screen.dart';
 import 'package:vibelit/util/preference_helper.dart';
 import 'package:vibelit/util/time_utils.dart';
 import 'package:vibelit/util/toasts.dart';
+import 'package:vibelit/util/utils.dart';
 import 'package:vibelit/widget/button/icon_circle_button.dart';
 import 'package:vibelit/widget/button/phone_button.dart';
 import 'package:vibelit/widget/button/stop_button.dart';
@@ -34,6 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
   OperationBloc _operationBloc;
   DataBloc _dataBloc;
   BluetoothBloc _bluetoothBloc;
+  DeviceBloc _deviceBloc;
 
   @override
   void initState() {
@@ -41,19 +46,29 @@ class _HomeScreenState extends State<HomeScreen> {
     _operationBloc = BlocProvider.of<OperationBloc>(context);
     _dataBloc = BlocProvider.of<DataBloc>(context);
     _bluetoothBloc = BlocProvider.of<BluetoothBloc>(context);
+    _deviceBloc = BlocProvider.of<DeviceBloc>(context);
     timer = Timer.periodic(Duration(seconds: 5), (Timer t) {
-      _operationBloc.add(OperationStatusEvent());
+
+      int random = Random().nextInt(100) % 4;
+      PreferenceHelper.setString(Params.values, Application.testStatus[random]);
+      _deviceBloc.add(DeviceCheckEvent());
+      /*_operationBloc.add(OperationStatusEvent());
       _dataBloc.add(DataLoadEvent());
       if (_bluetoothBloc.state is BluetoothConnectedState) {
         BluetoothConnection connection = (_bluetoothBloc.state as BluetoothConnectedState).connection;
         connection.input.listen((data) => _onDataReceived(data));
-      }
+      }*/
     });
   }
 
   void _onDataReceived(Uint8List data) {
-    String result = String.fromCharCodes(data).replaceAll("\n", "");
+    if (data == null) return;
+    String result = String.fromCharCodes(data);
+    if (result == null || result.isEmpty) return;
+    result = result.replaceAll("\n", "");
+    if (result.isEmpty) return;
     PreferenceHelper.setString(Params.values, result);
+    _deviceBloc.add(DeviceCheckEvent());
   }
 
   @override
@@ -121,14 +136,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         Align(
                             alignment: Alignment.center,
-                            child: BlocBuilder<OperationBloc, OperationState>(
+                            child: BlocBuilder<DeviceBloc, DeviceState>(
                               builder: (context, state) {
-                                if (state is OperationInProgressState)
-                                  return buildOperation(state);
-                                else if (state is OperationLoadingState)
-                                  return Container();
-                                else
-                                  return buildWeather();
+                                if (state is DeviceLoadingState) return Container();
+                                if (!Utils.isDeviceOn()) return buildWeather();
+                                else return buildOperation();
                               },
                             ))
                       ],
@@ -230,35 +242,45 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildStatus() {
-    return BlocBuilder<StatusBloc, StatusState>(
+    return BlocBuilder<DeviceBloc, DeviceState>(
       builder: (context, state) {
-        bool status = state is StatusOnState;
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 10,
-              height: 10,
-              decoration: new BoxDecoration(
-                color: status ? Colors.green : Colors.grey,
-                shape: BoxShape.circle,
+        if (state is DeviceLoadingState) return Container();
+        return Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => BluetoothPairScreen(fromSetting: true,),));
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(4),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 10,
+                    height: 10,
+                    decoration: new BoxDecoration(
+                      color: Utils.isDeviceOn() ? Colors.green : Colors.grey,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    Utils.isDeviceOn() ? "ON" : "OFF",
+                    style: TextStyle(fontSize: 10, color: Styles.primaryGrey),
+                  )
+                ],
               ),
             ),
-            SizedBox(
-              width: 10,
-            ),
-            Text(
-              status ? "ON" : "OFF",
-              style: TextStyle(fontSize: 10, color: Styles.primaryGrey),
-            )
-          ],
+          ),
         );
       },
     );
   }
 
-  Widget buildOperation(OperationInProgressState state) {
-    String mode = state.mode;
+  Widget buildOperation() {
     return TextButton(
         onPressed: () {
           Navigator.push(
@@ -282,7 +304,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20, fontFamily: 'Montserrat'),
                 textAlign: TextAlign.center,
               ),
-              mode != Constants.Air_Purification
+              Utils.getDeviceOperationMode() != Constants.AIR_PURIFICATION_MODE
                   ? Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -299,7 +321,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         TextButton(
                           child: Text(
-                            "${TimeUtils.calculateRemainedTimeInMinutes()} min",
+                            "${Utils.getDeviceOperationMode() == Constants.ODOUR_REMOVAL_MODE ? Utils.getDeviceTMr() : Utils.getDeviceTHr()} min",
                             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16, fontFamily: 'Montserrat'),
                           ),
                           style: TextButton.styleFrom(

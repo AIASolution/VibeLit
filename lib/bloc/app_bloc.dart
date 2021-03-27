@@ -10,6 +10,7 @@ class AppBloc {
   static final operationBloc = OperationBloc();
   static final dataBloc = DataBloc();
   static final bluetoothBloc = BluetoothBloc();
+  static final deviceBloc = DeviceBloc();
 
   static final List<BlocProvider> blocProviders = [
     BlocProvider<ApplicationBloc>(create: (context) => applicationBloc),
@@ -18,6 +19,7 @@ class AppBloc {
     BlocProvider<OperationBloc>(create: (context) => operationBloc),
     BlocProvider<DataBloc>(create: (context) => dataBloc),
     BlocProvider<BluetoothBloc>(create: (context) => bluetoothBloc),
+    BlocProvider<DeviceBloc>(create: (context) => deviceBloc),
   ];
 
   static void dispose() {
@@ -27,6 +29,7 @@ class AppBloc {
     operationBloc.close();
     dataBloc.close();
     bluetoothBloc.close();
+    deviceBloc.close();
   }
 
   ///Singleton factory
