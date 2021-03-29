@@ -49,15 +49,14 @@ class _HomeScreenState extends State<HomeScreen> {
     _deviceBloc = BlocProvider.of<DeviceBloc>(context);
     timer = Timer.periodic(Duration(seconds: 5), (Timer t) {
 
-      int random = Random().nextInt(100) % 4;
+      /*int random = Random().nextInt(100) % 4;
       PreferenceHelper.setString(Params.values, Application.testStatus[random]);
-      _deviceBloc.add(DeviceCheckEvent());
-      /*_operationBloc.add(OperationStatusEvent());
-      _dataBloc.add(DataLoadEvent());
+      _deviceBloc.add(DeviceCheckEvent());*/
+
       if (_bluetoothBloc.state is BluetoothConnectedState) {
         BluetoothConnection connection = (_bluetoothBloc.state as BluetoothConnectedState).connection;
         connection.input.listen((data) => _onDataReceived(data));
-      }*/
+      }
     });
   }
 

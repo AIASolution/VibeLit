@@ -3,6 +3,7 @@ import 'package:vibelit/bloc/status/status_event.dart';
 import 'package:vibelit/bloc/status/status_state.dart';
 import 'package:vibelit/config/params.dart';
 import 'package:vibelit/util/preference_helper.dart';
+import 'package:vibelit/util/utils.dart';
 
 class StatusBloc extends Bloc<StatusEvent, StatusState> {
   StatusBloc() : super(StatusOffState());
@@ -20,7 +21,7 @@ class StatusBloc extends Bloc<StatusEvent, StatusState> {
 
 
   Stream<StatusState> _mapStatusCheckEventToState() async* {
-    bool status = PreferenceHelper.getBool(Params.status);
+    bool status = Utils.isDeviceOn();
     if (status) yield StatusOnState();
     else yield StatusOffState();
   }

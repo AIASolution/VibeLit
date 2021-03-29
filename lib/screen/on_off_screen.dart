@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vibelit/bloc/bloc.dart';
 import 'package:vibelit/config/constants.dart';
-import 'package:vibelit/config/params.dart';
 import 'package:vibelit/config/styles.dart';
 import 'package:vibelit/screen/operation_start_screen.dart';
 import 'package:vibelit/screen/operation_stop_screen.dart';
 import 'package:vibelit/screen/parameter_screen.dart';
 import 'package:vibelit/screen/parameter_setting.dart';
-import 'package:vibelit/util/preference_helper.dart';
 import 'package:vibelit/util/toasts.dart';
 import 'package:vibelit/util/utils.dart';
 import 'package:vibelit/widget/button/feature_button.dart';
@@ -28,7 +26,7 @@ class _OnOffScreenState extends State<OnOffScreen> {
   void initState() {
     super.initState();
     _statusBloc = BlocProvider.of<StatusBloc>(context);
-    onOffValue = PreferenceHelper.getBool(Params.status);
+    onOffValue = Utils.isDeviceOn();
   }
 
   @override

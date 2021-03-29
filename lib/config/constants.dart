@@ -7,7 +7,7 @@ class Constants {
 
   static final String Air_Purification = "Air Purification";
   static final String Odour_Removal = "Odour Removal";
-  static final String Surface_Disinfection = "Surface Disinfection";
+  static final String Surface_Disinfection = "Surface Sanitize";
 
   static final String OFF_MODE = "A";
   static final String AIR_PURIFICATION_MODE = "C";
