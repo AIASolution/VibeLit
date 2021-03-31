@@ -35,7 +35,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Timer timer, bluetoothTimer;
-  OperationBloc _operationBloc;
   DataBloc _dataBloc;
   BluetoothBloc _bluetoothBloc;
   DeviceBloc _deviceBloc;
@@ -43,7 +42,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _operationBloc = BlocProvider.of<OperationBloc>(context);
     _dataBloc = BlocProvider.of<DataBloc>(context);
     _bluetoothBloc = BlocProvider.of<BluetoothBloc>(context);
     _deviceBloc = BlocProvider.of<DeviceBloc>(context);
@@ -66,8 +64,10 @@ class _HomeScreenState extends State<HomeScreen> {
     if (result == null || result.isEmpty) return;
     result = result.replaceAll("\n", "");
     if (result.isEmpty) return;
-    PreferenceHelper.setString(Params.values, result);
-    _deviceBloc.add(DeviceCheckEvent());
+    if (result.startsWith(Constants.OFF_MODE) || result.startsWith(Constants.AIR_PURIFICATION_MODE) || result.startsWith(Constants.ODOUR_REMOVAL_MODE) || result.startsWith(Constants.SURFACE_SANITIZE_MODE)) {
+      PreferenceHelper.setString(Params.values, result);
+      _deviceBloc.add(DeviceCheckEvent());
+    }
   }
 
   @override
@@ -165,11 +165,15 @@ class _HomeScreenState extends State<HomeScreen> {
                               width: 80,
                               height: 80,
                               onClick: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => OnOffScreen(),
-                                    ));
+                                if (_bluetoothBloc.state is BluetoothConnectedState) {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => OnOffScreen(),
+                                      ));
+                                } else {
+                                  ToastUtils.showErrorToast(context, "Device is not connected. Please connect device and try");
+                                }
                               },
                             )
                           ],

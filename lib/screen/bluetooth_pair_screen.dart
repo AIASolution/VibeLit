@@ -73,7 +73,6 @@ class _BluetoothPairScreenState extends State<BluetoothPairScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(child: Container()),
                 IconCircleButton(
                   icon: Icon(
                     Icons.clear,
@@ -82,6 +81,20 @@ class _BluetoothPairScreenState extends State<BluetoothPairScreen> {
                   ),
                   onClick: () {
                     Navigator.pop(context);
+                  },
+                  size: 24,
+                ),
+                Expanded(child: Container()),
+                IconCircleButton(
+                  icon: Icon(
+                    Icons.refresh,
+                    size: 24,
+                    color: Colors.white,
+                  ),
+                  onClick: () async {
+                    await getPairedDevices().then((value) {
+                      ToastUtils.showSuccessToast(context, "Device list refreshed");
+                    });
                   },
                   size: 24,
                 ),
@@ -145,7 +158,7 @@ class _BluetoothPairScreenState extends State<BluetoothPairScreen> {
           ) : Container(),
           TextButton(
             child: Text(
-              isConnectingDevice ? "Connecting..." : connected ? "Connected" : "Connect",
+              isConnectingDevice ? "Connecting..." : connected ? "Disconnect" : "Connect",
               style: TextStyle(color: isConnectingDevice ? Styles.bgYellow : connected ? Styles.bgGreen : Colors.white, fontSize: 12, fontFamily: 'Montserrat'),
             ),
             style: TextButton.styleFrom(
@@ -156,6 +169,8 @@ class _BluetoothPairScreenState extends State<BluetoothPairScreen> {
             onPressed: () async {
               if (!connected) {
                 await connect(_device.address);
+              } else {
+                await disconnect();
               }
             },
           ),
@@ -187,5 +202,16 @@ class _BluetoothPairScreenState extends State<BluetoothPairScreen> {
         });
       }
     });
+  }
+
+  Future<void> disconnect() async {
+    if (_bluetoothBloc.state is BluetoothConnectedState) {
+      await (_bluetoothBloc.state as BluetoothConnectedState).connection.close();
+      setState(() {
+        connectedDevice = "";
+        PreferenceHelper.remove(Params.lastDevice);
+        _bluetoothBloc.add(BluetoothCheckEvent());
+      });
+    }
   }
 }

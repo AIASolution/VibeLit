@@ -7,7 +7,6 @@ class AppBloc {
   static final applicationBloc = ApplicationBloc();
   static final weatherBloc = WeatherBloc();
   static final statusBloc = StatusBloc();
-  static final operationBloc = OperationBloc();
   static final dataBloc = DataBloc();
   static final bluetoothBloc = BluetoothBloc();
   static final deviceBloc = DeviceBloc();
@@ -16,7 +15,6 @@ class AppBloc {
     BlocProvider<ApplicationBloc>(create: (context) => applicationBloc),
     BlocProvider<WeatherBloc>(create: (context) => weatherBloc),
     BlocProvider<StatusBloc>(create: (context) => statusBloc),
-    BlocProvider<OperationBloc>(create: (context) => operationBloc),
     BlocProvider<DataBloc>(create: (context) => dataBloc),
     BlocProvider<BluetoothBloc>(create: (context) => bluetoothBloc),
     BlocProvider<DeviceBloc>(create: (context) => deviceBloc),
@@ -26,7 +24,6 @@ class AppBloc {
     applicationBloc.close();
     weatherBloc.close();
     statusBloc.close();
-    operationBloc.close();
     dataBloc.close();
     bluetoothBloc.close();
     deviceBloc.close();

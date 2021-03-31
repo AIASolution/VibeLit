@@ -24,7 +24,6 @@ class OperationStartScreen extends StatefulWidget {
 }
 
 class _OperationStartScreenState extends State<OperationStartScreen> {
-  OperationBloc _operationBloc;
   BluetoothBloc _bluetoothBloc;
   bool isLoading;
 
@@ -32,7 +31,6 @@ class _OperationStartScreenState extends State<OperationStartScreen> {
   void initState() {
     super.initState();
     isLoading = false;
-    _operationBloc = BlocProvider.of<OperationBloc>(context);
     _bluetoothBloc = BlocProvider.of<BluetoothBloc>(context);
   }
 

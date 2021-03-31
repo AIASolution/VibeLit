@@ -196,10 +196,12 @@ class _ParameterSettingScreenState extends State<ParameterSettingScreen> {
                             if (!isLoading) {
                               if (int.parse(volumeController.text) >= Constants.VOLUME_MIN && int.parse(volumeController.text) <= Constants.VOLUME_MAX) {
                                 BluetoothConnection connection = (_bluetoothBloc.state as BluetoothConnectedState).connection;
-                                connection.output.add(utf8.encode("\n<INT= $intensity> <VOL= ${volumeController.text}>\n"));
                                 setState(() {
                                   isLoading = true;
                                 });
+                                connection.output.add(utf8.encode("\n<INT= $intensity>\n"));
+                                await connection.output.allSent;
+                                connection.output.add(utf8.encode("\n<VOL= ${volumeController.text}>\n"));
                                 await connection.output.allSent;
                                 setState(() {
                                   isLoading = false;

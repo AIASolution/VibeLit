@@ -4,6 +4,7 @@ import 'package:vibelit/bloc/bloc.dart';
 import 'package:vibelit/bloc/data/bloc.dart';
 import 'package:vibelit/config/params.dart';
 import 'package:vibelit/util/preference_helper.dart';
+import 'package:vibelit/util/utils.dart';
 
 class DataBloc extends Bloc<DataEvent, DataState> {
   DataBloc() : super(DataLoadSuccessState());
@@ -16,7 +17,7 @@ class DataBloc extends Bloc<DataEvent, DataState> {
   }
 
   Stream<DataState> _mapDataLoadEventToState() async* {
-    if (AppBloc.operationBloc.state is OperationInProgressState) {
+    if (Utils.isDeviceOn()) {
       String mode = PreferenceHelper.getString(Params.operationMode);
       // communicate with controller
       // save data

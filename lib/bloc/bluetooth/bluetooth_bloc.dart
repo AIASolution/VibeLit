@@ -35,7 +35,10 @@ class BluetoothBloc extends Bloc<BluetoothEvent, BluetoothAppState> {
     else {
       BluetoothConnection connection = await BluetoothConnection.toAddress(lastDevice);
       if (connection.isConnected) yield BluetoothConnectedState(connection: connection);
-      else yield BluetoothPairState();
+      else {
+        PreferenceHelper.remove(Params.lastDevice);
+        yield BluetoothPairState();
+      }
     }
   }
 
