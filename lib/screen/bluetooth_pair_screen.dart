@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,6 +29,12 @@ class _BluetoothPairScreenState extends State<BluetoothPairScreen> {
   FlutterBluetoothSerial _bluetooth = FlutterBluetoothSerial.instance;
   BluetoothBloc _bluetoothBloc;
 
+
+  StreamSubscription<BluetoothDiscoveryResult> _streamSubscription;
+  List<BluetoothDiscoveryResult> results = List<BluetoothDiscoveryResult>();
+  bool isDiscovering;
+  String processingDevice;
+
   @override
   void initState() {
     super.initState();
@@ -35,6 +43,38 @@ class _BluetoothPairScreenState extends State<BluetoothPairScreen> {
     connectingDevice = "";
     connectedDevice = PreferenceHelper.getString(Params.lastDevice);
     getPairedDevices();
+
+    processingDevice = null;
+    _startDiscovery();
+  }
+
+  @override
+  void dispose() {
+    _streamSubscription?.cancel();
+    super.dispose();
+  }
+
+  void _startDiscovery() {
+    _streamSubscription = FlutterBluetoothSerial.instance.startDiscovery().listen((r) {
+          setState(() {
+            results.add(r);
+          });
+        });
+
+    _streamSubscription.onDone(() {
+      setState(() {
+        isDiscovering = false;
+      });
+    });
+  }
+
+  void _restartDiscovery() {
+    setState(() {
+      results.clear();
+      isDiscovering = true;
+    });
+
+    _startDiscovery();
   }
 
   Future<void> getPairedDevices() async {
@@ -91,10 +131,8 @@ class _BluetoothPairScreenState extends State<BluetoothPairScreen> {
                     size: 24,
                     color: Colors.white,
                   ),
-                  onClick: () async {
-                    await getPairedDevices().then((value) {
-                      ToastUtils.showSuccessToast(context, "Device list refreshed");
-                    });
+                  onClick: () {
+                    _restartDiscovery();
                   },
                   size: 24,
                 ),
@@ -114,14 +152,69 @@ class _BluetoothPairScreenState extends State<BluetoothPairScreen> {
                     SizedBox(height: 40,),
                     ListView.separated(
                       padding: const EdgeInsets.only(bottom: 30),
-                      itemCount: _devicesList.length,
+                      itemCount: results.length,
                         primary: false,
                         shrinkWrap: true,
-                        itemBuilder: (context, index) => buildDeviceItem(index),
+                        itemBuilder: (context, index) => _buildDeviceItem(index),
                     separatorBuilder: (context, index) => SizedBox(height: 20,),)
                   ],
                 ),
               )
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDeviceItem(int index) {
+    BluetoothDevice device = results[index].device;
+    int rssi = results[index].rssi;
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 30),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0xff8b9399).withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 2,
+            offset: Offset(0, 1), // changes position of shadow
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(device.name ?? "Unknown device", style: TextStyle(color: Colors.white, fontSize: 14, fontFamily: 'Montserrat'),),
+              SizedBox(height: 5,),
+              Text(device.address, style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 12, fontFamily: 'Montserrat'),),
+            ],
+          ),
+          Expanded(child: Container()),
+          device.address == processingDevice ? SizedBox(
+            child: CircularProgressIndicator(strokeWidth: 2,),
+            height: 20.0,
+            width: 20.0,
+          ) : Container(),
+          IconCircleButton(
+            icon: Icon(Icons.link, size: 24, color: Colors.white,),
+            size: 24,
+            padding: 8,
+            onClick: () {
+
+            },
+          ),
+          IconCircleButton(
+            icon: Icon(Icons.import_export, size: 24, color: Colors.white,),
+            size: 24,
+            padding: 8,
+            onClick: () {
+
+            },
           )
         ],
       ),
